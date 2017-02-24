@@ -78,23 +78,30 @@
       cout << buffer << endl;
       TFile *f = TFile::Open(buffer);
 
+
       if(f){
 	      // ******* Plot graph to check the cut on padvstof                
-              gROOT->ProcessLine(".x ../../Alphas.C");
-              // TCutG *cut0=new TCutG();
-              // TCutG *cut0   = (TCutG*)gROOT-> Get( "Alphas" );
-	      TH2F *pad1vstof_check = new TH2F("pad1vstof_check","Check of the cut in padvstof",350,1600,2300,3000,0,3000);
+	      gROOT->ProcessLine(".x ../../Alphas.C");
 
-              DATA->Draw("pad1:tof>>pad1vstof_check","","col");
-              cutg->SetLineColor(2);
+	      TH2F *pad1vstof_check = new TH2F("h2pad1vstof","Check of the cut in padvstof",350,1600,2300,3000,0,3000);
+              DATA->Draw("pad1:tof>>h2pad1vstof","","col");
+	      
+              int entries = h2pad1vstof->GetEntries();
+	      cout << "ENTRIES in histo = " <<entries<<endl;
+	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
+              
+	      cutg->SetLineColor(2);
               cutg->SetLineWidth(2);
               cutg->Draw("same");
-	      c1->Modified();
+
+  	      c1->Modified();
 	      c1->Update();
 	      c1->WaitPrimitive();
+	      if(i<(int)runlist.size()-1-1)c1->Clear();
+
 
        	    }
-
+	 
   //   cout << "Press any key to continue...";
   //    cin >> pause;		
 
@@ -103,3 +110,5 @@
 
 
 }
+
+
