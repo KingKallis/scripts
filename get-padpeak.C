@@ -3,8 +3,8 @@
   // It is set to be run in the folder where the sortedfiles are
   // Put the list of runs in the same folder or change the folders path according to your needs
 
-  bool Mg24_NoCol = true;
-  bool Mg24_Col = false;
+  bool Mg24_NoCol = false;
+  bool Mg24_Col = true;
   bool Sn116_NoCol = false;
 
  vector<int> runlist;
@@ -49,22 +49,17 @@
 
   Int_t nrofruns=(int)runlist.size()-1; 
 
-  Double_t height,position,sigm,intercept,slope;
+/*  int x1poslow,x1poshi;
 
-  TF1 *fit = new TF1("fit","gaus(0) + pol1(3)",620,650);
-  cout << "Height of gaussian"<< endl;
-  cin >> height;
-  cout << "Position of gaussian"<< endl;
-  cin >> position;
-  cout << "Sigma of gaussian"<< endl;
-  cin >> sigm;
-  cout << "Intercep of linebkg"<< endl;
-  cin >> intercept;
-  cout << "Slope of linebkg"<< endl;
-  cin >> slope;
+  cout << "lower limit for the X1Pos peak"<< endl;
+  cin >> x1poslow;
+  cout << "higher limit for the X1Pos peak"<< endl;
+  cin >> x1poshi;
 
-  fit->SetParameters(height,position,sigm,intercept,slope);  
+  TCut CUTX1pos = "X1pos>x1poslow && X1pos<x1poshi";
+*/
 
+  TCut CUTX1pos = "X1pos>620 && X1pos<640"; //----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
 
   Double_t a0,a1,a2,a3,a4,norm;
   Double_t width = 5.;
@@ -73,8 +68,9 @@
 
   Float_t peakposition[nrofruns];
   Float_t sigma[nrofruns];
-  gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
-  gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
+
+  //gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
+  gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
 
 
 for(int i=0;i<(int)runlist.size()-1;i++)
@@ -85,10 +81,11 @@ for(int i=0;i<(int)runlist.size()-1;i++)
       TFile *f = TFile::Open(buffer);
 
       if(f){
-	     TH1F *hX1pos = new TH1F("hX1pos","X1 Position",300,500.,800.);
-	     DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");
+	     TH1F *hpad1 = new TH1F("hpad1","pad1 spectrum",800,1000.,1800.);
+	  //   DATA->Draw("pad1>>hpad1","Alphas_24Mg_NoCol && CUTX1pos","");
+             DATA->Draw("pad1>>hpad1","Alphas_24Mg_Col" && CUTX1pos,"");
 	  
-	  int entries = hX1pos->GetEntries();
+	  int entries = hpad1->GetEntries();
 	  cout << "ENTRIES in histo = " <<entries<<endl;
 	  if(entries==0) 
 		{cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
@@ -96,9 +93,10 @@ for(int i=0;i<(int)runlist.size()-1;i++)
          	 sigma[i] = 0;
 		}else{
 	  
-	  hX1pos->Fit(fit,"R","");  
 
-	  fit->GetParameters(par);
+	  hpad1->Fit("gaus","R","",1200,1700);  
+
+	  gaus->GetParameters(par);
 
 	  //a0=par[0];a1=par[1];a2=par[2];a3=par[3];
           //cout << endl << " par0 " << a0 <<"; par1 " << a1 <<"; par2 " << a2 << "; par3 "<< a3 << "; par4 "<< a4<< endl << endl;
@@ -120,7 +118,7 @@ for(int i=0;i<(int)runlist.size()-1;i++)
    
   //Creates file with the offsets in the current folder. Then move it to the analyser folder and remove _new to be able to use it
   ofstream outputFile;
-  outputFile.open("X1offsetsPR251_new.dat");
+  outputFile.open("PAD1offsetsPR251_new.dat");
 
   for(Int_t i=0;i<nrofruns;i++)	{
      cout << runlist[i] <<"  "<< float(peakposition[0]-peakposition[i]) << endl;
