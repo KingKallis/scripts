@@ -3,8 +3,9 @@
   // It is set to be run in the folder where the sortedfiles are
   // Put the list of runs in the same folder or change the folders path according to your needs
 
-  bool Mg24_NoCol = false;
-  bool Mg24_Col = true;
+  bool Mg24_NoCol = true;
+  bool Mg24_Col = false;
+  bool Sn116_NoCol = false;
 
  vector<int> runlist;
   if(Mg24_NoCol)
@@ -19,10 +20,22 @@
 		 if(dummy!=0)  cout << "LIST:run number " << dummy << endl;
 		}
     }  
-  if(Mg24_Col)
+   else if(Mg24_Col)
     {
       ifstream input;
       input.open("24Mg_runs_Col.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		  if(dummy!=0) cout << "LIST:run number " << dummy << endl;
+		}
+    }
+   else if(Sn116_NoCol)
+    {
+      ifstream input;
+      input.open("116Sn_runs_NoCol.dat");
       while(!input.eof())
 		{
 		  int dummy = 0;
@@ -91,9 +104,9 @@ for(int i=0;i<(int)runlist.size()-1;i++)
      cout << ""<< runlist[i] <<"  Difference compared with run "<< runlist[0] <<"  "<< peakposition[i]-peakposition[0] << endl;
   }
    
-  //Creates file with the offsets in the analyser folder
+  //Creates file with the offsets in the current folder. Then move it to the analyser folder and remove _new to be able to use it
   ofstream outputFile;
-  outputFile.open("/home/luna/codes/k600analyser/TOFoffsetsPR251.dat");
+  outputFile.open("TOFoffsetsPR251_new.dat");
 
   for(Int_t i=0;i<nrofruns;i++)	{
      cout << runlist[i] <<"  "<< int(peakposition[0]-peakposition[i]) << endl;

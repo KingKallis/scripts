@@ -1,13 +1,13 @@
 {
-  bool Mg24_NoCol = true;
-  bool Mg24_Col = false;
+  bool Mg24_NoCol = false;
+  bool Mg24_Col = true;
   bool Mg26 = false;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
 
  // char pause;
-  c1 = new TCanvas("c1","Checks on Cut PadvsToF",10,10,900,600);
+  c1 = new TCanvas("c1","Checks X1pos",10,10,900,600);
   
 
   vector<int> runlist;
@@ -93,21 +93,18 @@
 
       if(f){
 	      // ******* Plot graph to check the cut on padvstof                
-	     // gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/Alphas.C");
-             // gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
-	      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
+	      //gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/Alphas.C");
 
-
-	      TH2F *pad1vstof_check = new TH2F("h2pad1vstof","Check of the cut in padvstof",350,1600,2300,3000,0,3000);
-              DATA->Draw("pad1:tof>>h2pad1vstof","","col");
+	      TH1F *hX1pos = new TH1F("hX1pos","Check X1pos",800,0,800);
+              DATA->Draw("X1pos>>hX1pos","","col");
 	      
-              int entries = h2pad1vstof->GetEntries();
+              int entries = hX1pos->GetEntries();
 	      cout << "ENTRIES in histo = " <<entries<<endl;
 	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
               
-	      cutg->SetLineColor(2);
-              cutg->SetLineWidth(2);
-              cutg->Draw("same");
+	      //cutg->SetLineColor(2);
+              //cutg->SetLineWidth(2);
+              //cutg->Draw("same");
 
   	      c1->Modified();
 	      c1->Update();
@@ -121,9 +118,6 @@
   //    cin >> pause;		
 
       }
-
-
-
 	  
 
 
