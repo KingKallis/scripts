@@ -1,10 +1,23 @@
 {
-  // Code to calculate the TOF offsets-----
+  #include <TSpectrum.h>
+  #include <TH1.h>
+  #include <TF1.h>
+
+#include <TFile.h>
+#include <TTree.h>
+#include <TCanvas.h>
+#include <TGraph.h>
+#include <iostream>
+#include <fstream>
+#include <TAxis.h>
+#include <TH2.h>
+#include <TMath.h>
+  // Code to calculate the X1 offsets-----
   // It is set to be run in the folder where the sortedfiles are
   // Put the list of runs in the same folder or change the folders path according to your needs
 
-  bool Mg24_NoCol = true;
-  bool Mg24_Col = false;
+  bool Mg24_NoCol = false;
+  bool Mg24_Col = true;
   bool Sn116_NoCol = false;
 
  vector<int> runlist;
@@ -49,9 +62,9 @@
 
   Int_t nrofruns=(int)runlist.size()-1; 
 
-  Double_t height,position,sigm,intercept,slope;
-
-  TF1 *fit = new TF1("fit","gaus(0) + pol1(3)",620,650);
+  Float_t height,position,sigm,intercept,slope;
+  Double_t xmin=600,xmax=700;
+  TF1 *fit = new TF1("fit","gaus(0) + pol1(3)",xmin,xmax);
   cout << "Height of gaussian"<< endl;
   cin >> height;
   cout << "Position of gaussian"<< endl;
@@ -73,8 +86,19 @@
 
   Float_t peakposition[nrofruns];
   Float_t sigma[nrofruns];
-  gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
-  gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
+
+  if(Mg24_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
+      cout << "----------------> using cuts for 24Mg No Collimator data" << endl;
+    }
+  else if(Mg24_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
+      cout << "----------------> using cuts for 24Mg Collimator data" << endl;
+    }
 
 
 for(int i=0;i<(int)runlist.size()-1;i++)
@@ -86,8 +110,19 @@ for(int i=0;i<(int)runlist.size()-1;i++)
 
       if(f){
 	     TH1F *hX1pos = new TH1F("hX1pos","X1 Position",300,500.,800.);
-	     DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");
-	  
+
+             if(Mg24_NoCol)
+              {
+	        DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NCol && Cut_pad1X1_24Mg_NoCol","");
+                //cout << "24Mg No Collimator cuts" << endl;
+              }
+	     else if (Mg24_Col)
+	      {
+	        DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");
+		//cout << "24Mg Collimator cuts" << endl;
+	      }
+
+
 	  int entries = hX1pos->GetEntries();
 	  cout << "ENTRIES in histo = " <<entries<<endl;
 	  if(entries==0) 
@@ -95,9 +130,25 @@ for(int i=0;i<(int)runlist.size()-1;i++)
         	 peakposition[i] = peakposition[0];
          	 sigma[i] = 0;
 		}else{
-	  
-	  hX1pos->Fit(fit,"R","");  
 
+	  ///   ***************** TO BE CHECKED
+              TSpectrum *sp = new TSpectrum();
+	      sp->Search(hX1pos,sigm,"",0.8); // h histoname; 1. sigma; 0.28 threshold (minimum intensity considered = maximum * threshold)
+	      int n_peaks_found = sp->GetNPeaks(); 
+//  	      sprintf(buffer,"sorted0%d.root",runlist[i]);
+	      std::cout << n_peaks_found << " ---------" << endl;
+              Float_t* x = sp->GetPositionX();
+	     // Float_t xxx = x[0];
+	      cout << x[0] << " *************" << endl;
+              xmin=x[0]-10*sigm, xmax=x[0]+10*sigm;
+ 	      cout << xmin << " " << xmax <<" " <<  x[0] << endl;
+              fit->SetParameter(1,x[0]);
+              hX1pos->Fit(fit,"R","",xmin,xmax);
+                
+       
+         /// ************************************
+ 
+        //  hX1pos->Fit(fit,"R","");
 	  fit->GetParameters(par);
 
 	  //a0=par[0];a1=par[1];a2=par[2];a3=par[3];
