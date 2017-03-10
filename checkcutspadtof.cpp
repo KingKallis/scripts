@@ -1,6 +1,6 @@
 {
-  bool Mg24_NoCol = true;
-  bool Mg24_Col = false;
+  bool Mg24_NoCol = false;
+  bool Mg24_Col = true;
   bool Mg26 = false;
   bool C12 = false;
   bool Sm154 = false;
@@ -83,6 +83,17 @@
     }
   cout << "number of runs: " << runlist.size()-1 << endl;
   
+ if(Mg24_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
+      cout << "----------------> using cuts for 24Mg No Collimator data" << endl;
+    }
+  else if(Mg24_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
+      cout << "----------------> using cuts for 24Mg Collimator data" << endl;
+    }
+
   for(int i=0;i<(int)runlist.size()-1;i++)
     {
       char buffer[256];
@@ -92,15 +103,14 @@
 
 
       if(f){
-	      // ******* Plot graph to check the cut on padvstof                
-	     // gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/Alphas.C");
-             // gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
-	      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
+	      // ******* Plot graph to check the cut on padvstof               
 
 
 	      TH2F *pad1vstof_check = new TH2F("h2pad1vstof","Check of the cut in padvstof",350,1600,2300,3000,0,3000);
-              DATA->Draw("pad1:tof>>h2pad1vstof","","col");
-	      
+              DATA->Draw("pad1:tof>>h2pad1vstof","","col");// CORRECTED
+	      // DATA->Draw("pad1:toftdc1>>h2pad1vstof","","col");//NON CORRECTED
+
+
               int entries = h2pad1vstof->GetEntries();
 	      cout << "ENTRIES in histo = " <<entries<<endl;
 	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;

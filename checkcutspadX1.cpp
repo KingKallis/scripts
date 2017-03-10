@@ -83,6 +83,18 @@
     }
   cout << "number of runs: " << runlist.size()-1 << endl;
   
+ if(Mg24_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
+      cout << "----------------> using cuts for 24Mg No Collimator data" << endl;
+    }
+  else if(Mg24_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
+      cout << "----------------> using cuts for 24Mg Collimator data" << endl;
+    }
+
+
   for(int i=0;i<(int)runlist.size()-1;i++)
     {
       char buffer[256];
@@ -92,15 +104,13 @@
 
 
       if(f){
-	      // ******* Plot graph to check the cut on padvstof                
-	     
-              gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
-	     // gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
+	      // ******* Plot graph to check the cut on padvsX1                
+	    
+	     TH2F *pad1vstof_check = new TH2F("h2pad1vsX1","Check of the cut in padvstof",800,0,800,3000,0,3000);
+             
+	     DATA->Draw("pad1:X1pos>>h2pad1vsX1","","col"); //CORRECTED
+	  //   DATA->Draw("pad1raw:X1pos>>h2pad1vsX1","","col"); //NON CORRECTED
 
-
-	      TH2F *pad1vstof_check = new TH2F("h2pad1vsX1","Check of the cut in padvstof",800,0,800,3000,0,3000);
-              DATA->Draw("pad1:X1pos>>h2pad1vsX1","","col");
-	      
               int entries = h2pad1vsX1->GetEntries();
 	      cout << "ENTRIES in histo = " <<entries<<endl;
 	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
