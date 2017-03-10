@@ -16,6 +16,7 @@
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
       cout << "----------------> using cuts for 24Mg No Collimator data" << endl;
     }
+
   else if(Mg24_Col)
     {
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
@@ -117,7 +118,7 @@
    hPeakofInterest_Y1X1_1->Fit("pol2");
    pol2->GetParameters(par_Y1X1);
    a0=par_Y1X1[0];a1=par_Y1X1[1];a2=par_Y1X1[2];
-   cout << endl << " par0_Y1X1 " << a0 <<"; par1_Y1X1 " << a1 <<"; par2_Y1X1 " << a2 << endl;
+   cout << endl << " par0_Y1 " << a0 <<"; par1_Y1 " << a1 <<"; par2_Y1 " << a2 << endl;
    hPeakofInterest_Y1X1_1->GetXaxis()->SetRangeUser(-20., 20.);
    hPeakofInterest_Y1X1_1->GetYaxis()->SetRangeUser(-20., 20.);
    c3 -> Update();
@@ -258,8 +259,14 @@
 
  //implement lineshaping correction
    
-   DATA->SetAlias("X1new",Form("X1_Y1new-(%g+(%g*(tof-%g)+(%g*pow(tof-%g,2))))",b0,b1,tofmean,b2,tofmean));
+   Double_t X1ref=0;
 
+   cout << "X1 value for the peak that doesn't need correction" << endl;
+   cin >> X1ref;
+
+  // DATA->SetAlias("X1new",Form("X1_Y1new-(%g+(%g*(tof-%g)+(%g*pow(tof-%g,2))))",b0,b1,tofmean,b2,tofmean));
+   DATA->SetAlias("X1new",Form("X1_Y1new-((%g*(tof-%g)+(%g*pow(tof-%g,2)))*(X1_Y1new-%g)/(%g))",b1,tofmean,b2,tofmean,X1ref,X1mean-X1ref));
+   
    TH2F *htofvsX1new = new TH2F("htofvsX1new","tof vs X1new",700,100,800,100,1910,2010);
    TCanvas *c8 = new TCanvas("c8","tof vs X1 corrected matrix",10,10,900,600);
 
@@ -277,6 +284,13 @@
    c8 -> Update();
    c8 -> Modified();
 
+
+   cout << " " << endl;    cout << " " << endl;    cout << " " << endl;
+   cout << "----------------PARAMETERS for the Y1 & TOF CORRECTIONS TO PUT IN THE CONFIG FILE----------------" << endl;
+   cout << " " << endl; 
+
+   cout << endl << " Y1 ----> par0  " << -a0 <<"; par1 " << -a1 <<"; par2 " << -a2 << endl;
+   cout << endl << " TOF ----> par0 " << -b0 <<"; par1 " << -b1 <<"; par2 " << -b2 << endl;
 }
 
 // Project slices along X in case of a 2-D histogram, then fit each slice 
