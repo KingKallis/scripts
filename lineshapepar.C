@@ -266,6 +266,7 @@
 
   // DATA->SetAlias("X1new",Form("X1_Y1new-(%g+(%g*(tof-%g)+(%g*pow(tof-%g,2))))",b0,b1,tofmean,b2,tofmean));
    DATA->SetAlias("X1new",Form("X1_Y1new-((%g*(tof-%g)+(%g*pow(tof-%g,2)))*(X1_Y1new-%g)/(%g))",b1,tofmean,b2,tofmean,X1ref,X1mean-X1ref));
+  
    
    TH2F *htofvsX1new = new TH2F("htofvsX1new","tof vs X1new",700,100,800,100,1910,2010);
    TCanvas *c8 = new TCanvas("c8","tof vs X1 corrected matrix",10,10,900,600);

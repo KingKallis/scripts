@@ -1,51 +1,32 @@
 {
-  bool Mg24 = true;
+  bool Mg24_NoCol = false;
+  bool Mg24_Col = true;
   bool Mg26 = false;
   bool C12 = false;
   bool Sm154 = false;
-  bool Sm154test = false;
-  bool Sm154nopulse = false;
-  bool Sn116 = false;
-  bool Eu152 = false;
-  bool Na22 = false;
-  bool AmBeFe = false;
-  bool Co56 = false;
+  bool Sn116_NoCol = false;
+
 
   bool maketree = false;
 
-  //  Include any cuts that you might want to use ---------------------------
-  
-//gROOT->ProcessLine(".x pad_tof_alphas0.C"); // USE THIS KIND OF LINE FOR CUTS SAVED AS C FILES ".C"
-
- //gROOT->ProcessLine(".x CUTpadVStof.C");
-//TCutG *cut0=new TCutG();
-//TCutG *cut0   = (TCutG*)gROOT-> Get( "CUTpadVStof" );
-//gROOT->ProcessLine(".x cut1.C");
-//TCutG *cut1=new TCutG();
-//TCutG *cut1   = (TCutG*)gROOT-> Get( "cut1" );
-// gROOT->ProcessLine(".x Alphas.C");
-//TCutG *cut2=new TCutG();
-//TCutG *cut2   = (TCutG*)gROOT-> Ge KIND OF LINE FOR CUTS SAVED AS C FILES t( "Alphas" );
-//TFile * file2 = new TFile("yourcut.root","OLD"); // USE THIS KIND OF LINE FOR CUTS SAVED AS ROOT FILES ".root"
-//gROOT->ProcessLine(".x pad_tof.C"); // USE THIS KIND OF LINE FOR CUTS SAVED AS C FILES ".C"
-//TCutG *cut3=new TCutG();
-//TCutG *cut3   = (TCutG*)gROOT-> FindObject( "pad_tof" );
-//TCutG *cut3   = (TCutG*)gROOT-> Get( "pad_tof" );
-//TCutG *cut = new TCutG();
-//TFile * file2 = new TFile("pad_tof0.root","OLD"); // USE THIS KIND OF LINE FOR CUTS SAVED AS ROOT FILES ".root"
-//TCutG *cut   = (TCutG*)gROOT-> Get( "pad_tof0" );
-//file2 -> Close();7
-
-//    TCut CUTcoinc = "abs((18686.5-19.35*X1pos) -GammaEnergy -1368.) < 200";
-  // ----------------------------------------
-  
   TChain *DATAch = new TChain("DATA");
 
   vector<int> runlist;
-  if(Mg24)
+  if(Mg24_NoCol)
     {
       ifstream input;
-      input.open("24Mg_runs.dat");
+      input.open("24Mg_runs_NoCol.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }  
+  if(Mg24_Col)
+    {
+      ifstream input;
+      input.open("24Mg_runs_Col.dat");
       while(!input.eof())
 		{
 		  int dummy = 0;
@@ -89,34 +70,10 @@
 		  runlist.push_back(dummy);
 		}
     }
-  else if(Sm154test)
+  else if(Sn116_NoCol)
     {
       ifstream input;
-      input.open("154Sm_runs_test.dat");
-      
-      while(!input.eof())
-		{
-		  int dummy = 0;
-		  input >> dummy;
-		  runlist.push_back(dummy);
-		}
-    }      
-else if(Sm154nopulse)
-    {
-      ifstream input;
-      input.open("154Sm_runs_thick_nopulse.dat");
-      
-      while(!input.eof())
-		{
-		  int dummy = 0;
-		  input >> dummy;
-		  runlist.push_back(dummy);
-		}
-    }  
-  else if(Sn116)
-    {
-      ifstream input;
-      input.open("116Sn_runs.dat");
+      input.open("116Sn_runs_NoCol.dat");
       
       while(!input.eof())
 		{
@@ -125,58 +82,47 @@ else if(Sm154nopulse)
 		  runlist.push_back(dummy);
 		}
     }
-    else if(Eu152)
-    {
-      ifstream input;
-      input.open("152Eu_Efficiency_Calibration.dat");
-
-      while(!input.eof())
-                {
-                  int dummy = 0;
-                  input >> dummy;
-                  runlist.push_back(dummy);
-                }
-    }
-
-     else if(Na22)
-    {
-      ifstream input;
-      input.open("Na22_Efficiency_Calibration.dat");
-
-      while(!input.eof())
-                {
-                  int dummy = 0;
-                  input >> dummy;
-                  runlist.push_back(dummy);
-                }
-    }
-     else if(AmBeFe)
-    {
-      ifstream input;
-      input.open("AmBeFe_Calibration.dat");
-
-      while(!input.eof())
-                {
-                  int dummy = 0;
-                  input >> dummy;
-                  runlist.push_back(dummy);
-                }
-    }
-
-     else if(Co56)
-    {
-      ifstream input;
-      input.open("56Co_Calibration.dat");
-
-      while(!input.eof())
-                {
-                  int dummy = 0;
-                  input >> dummy;
-                  runlist.push_back(dummy);
-                }
-    }
-
   cout << "number of runs: " << runlist.size()-1 << endl;
+ 
+  //  Include any cuts that you might want to use ---------------------------
+  
+ if(Mg24_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
+      cout << "----------------> using cuts for 24Mg No Collimator data" << endl;
+    }
+  else if(Mg24_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
+      cout << "----------------> using cuts for 24Mg Collimator data" << endl;
+    }
+  
+//gROOT->ProcessLine(".x pad_tof_alphas0.C"); // USE THIS KIND OF LINE FOR CUTS SAVED AS C FILES ".C"
+
+ //gROOT->ProcessLine(".x CUTpadVStof.C");
+//TCutG *cut0=new TCutG();
+//TCutG *cut0   = (TCutG*)gROOT-> Get( "CUTpadVStof" );
+//gROOT->ProcessLine(".x cut1.C");
+//TCutG *cut1=new TCutG();
+//TCutG *cut1   = (TCutG*)gROOT-> Get( "cut1" );
+// gROOT->ProcessLine(".x Alphas.C");
+//TCutG *cut2=new TCutG();
+//TCutG *cut2   = (TCutG*)gROOT-> Ge KIND OF LINE FOR CUTS SAVED AS C FILES t( "Alphas" );
+//TFile * file2 = new TFile("yourcut.root","OLD"); // USE THIS KIND OF LINE FOR CUTS SAVED AS ROOT FILES ".root"
+//gROOT->ProcessLine(".x pad_tof.C"); // USE THIS KIND OF LINE FOR CUTS SAVED AS C FILES ".C"
+//TCutG *cut3=new TCutG();
+//TCutG *cut3   = (TCutG*)gROOT-> FindObject( "pad_tof" );
+//TCutG *cut3   = (TCutG*)gROOT-> Get( "pad_tof" );
+//TCutG *cut = new TCutG();
+//TFile * file2 = new TFile("pad_tof0.root","OLD"); // USE THIS KIND OF LINE FOR CUTS SAVED AS ROOT FILES ".root"
+//TCutG *cut   = (TCutG*)gROOT-> Get( "pad_tof0" );
+//file2 -> Close();7
+
+//    TCut CUTcoinc = "abs((18686.5-19.35*X1pos) -GammaEnergy -1368.) < 200";
+  // ----------------------------------------
+  
 
   for(int i=0;i<(int)runlist.size()-1;i++)
     {

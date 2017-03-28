@@ -6,8 +6,7 @@
   bool Sm154 = false;
   bool Sn116_NoCol = false;
 
- // char pause;
-  c1 = new TCanvas("c1","Checks X1pos",10,10,900,600);
+
   
 
   vector<int> runlist;
@@ -107,26 +106,31 @@
       cout << histo << endl;
 
       if(f){
-	      // ******* Plot graph to check X1 position 
-            TH2F *htofvsX1posCTOF = new TH2F("htofvsX1posCTOF","Check tof vs X1posCTOF",700,100,800,100,1910,2010);              
+	     
+            c1 = new TCanvas("c1","Checks tof vs X1posCTOF",10,10,900,600);
+            // ******* Plot graph to check X1 position 
+            TH2F *htofvsX1posCTOF = new TH2F("htofvsX1posCTOF","Check tof vs X1posCTOF",700,100,800,100,1910,2010);
+	   // TH2F *htofvsX1posO = new TH2F("htofvsX1posO","Check tof vs X1posO",700,100,800,100,1910,2010);              
 	    
             if(Mg24_NoCol)
               {
-		DATA->Draw("tof:X1posO>>htofvsX1posCTOF","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","colz");//NON CORRECTED
-	        //DATA->Draw("tof:X1posCTOF>>htofvsX1posCTOF","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","colz");//CORRECTED
+		//DATA->Draw("tof:X1posO>>htofvsX1posO","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//NON CORRECTED
+	        DATA->Draw("tof:X1posCTOF>>htofvsX1posCTOF","X1flag==0 && U1flag==0 && Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","colz");//CORRECTED
                 //cout << "24Mg No Collimator cuts" << endl;
               }
 	     else if (Mg24_Col)
 	      {
-	        DATA->Draw("tof:X1posO>>htofvsX1posCTOF","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","colz");//NON CORRECTED
-	      //  DATA->Draw("tof:X1posCTOF>>htofvsX1posCTOF","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","colz");//CORRECTED
+	      //  DATA->Draw("tof:X1posO>>htofvsX1posO","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//NON CORRECTED
+	        DATA->Draw("tof:X1posCTOF>>htofvsX1posCTOF","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","colz");//CORRECTED
 		//cout << "24Mg Collimator cuts" << endl;
 	      }
 	      
               int entries = htofvsX1posCTOF->GetEntries();
 	      cout << "ENTRIES in histo = " <<entries<<endl;
 	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
-              
+
+           //   htofvsX1posO->Draw();
+              htofvsX1posCTOF->Draw("");
 	      
               TLine *line1 = new TLine(633,1910,633,2010);
               line1->SetLineColor(2);
@@ -145,6 +149,43 @@
 	        c1->WaitPrimitive();
 	        if(i<(int)runlist.size()-1-1)c1->Clear();
 
+
+            c2 = new TCanvas("c2","Checks X1pos",10,10,900,600);
+            // ******* Plot graph to check X1 position 
+            TH1F *hX1posCTOF = new TH1F("hX1posCTOF","Check X1posCTOF",700,100,800);
+	    TH1F *hX1posO = new TH1F("hX1posO","Check X1posO",700,100,800);              
+	    
+            if(Mg24_NoCol)
+              {
+		DATA->Draw("X1posO>>hX1posO","X1flag==0 && U1flag==0 && Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","colz");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1posCTOF","X1flag==0 && U1flag==0 && Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","colz");//CORRECTED
+                //cout << "24Mg No Collimator cuts" << endl;
+              }
+	     else if (Mg24_Col)
+	      {
+	        DATA->Draw("X1posO>>hX1posO","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","colz");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1posCTOF","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","colz");//CORRECTED
+		//cout << "24Mg Collimator cuts" << endl;
+	      }
+	      
+              int entries = htofvsX1posCTOF->GetEntries();
+	      cout << "ENTRIES in histo = " <<entries<<endl;
+	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
+              
+	      
+              
+              hX1posCTOF->SetLineColor(2);
+              hX1posCTOF->Draw();
+              hX1posO->Draw("same");
+
+              c2->Modified();	
+              c2->Update();        
+	      c2->WaitPrimitive();
+	      if(i<(int)runlist.size()-1-1)
+                {
+		  c1->Clear();
+		  c2->Clear():
+                }
 
        	    }
 		
