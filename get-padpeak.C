@@ -5,6 +5,8 @@
 
   bool Mg24_NoCol = false;
   bool Mg24_Col = true;
+  bool Mg26_NoCol = false;
+  bool Mg26_Col = false;
   bool Sn116_NoCol = false;
 
  vector<int> runlist;
@@ -30,6 +32,28 @@
 		  input >> dummy;
 		  runlist.push_back(dummy);
 		  if(dummy!=0) cout << "LIST:run number " << dummy << endl;
+		}
+    }
+  else if(Mg26_NoCol)
+    {
+      ifstream input;
+      input.open("26Mg_runs_NoCol.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }
+  else if(Mg26_Col)
+    {
+      ifstream input;
+      input.open("26Mg_runs_Col.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
 		}
     }
    else if(Sn116_NoCol)
@@ -59,7 +83,8 @@
   TCut CUTX1pos = "X1pos>x1poslow && X1pos<x1poshi";
 */
 
-  TCut CUTX1pos = "X1pos>620 && X1pos<640"; //----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
+  TCut CUTX1pos = "X1pos>620 && X1pos<640"; //24Mg----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
+ // TCut CUTX1pos = "X1pos>660 && X1pos<720"; //24Mg----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
 
   Double_t a0,a1,a2,a3,a4,norm;
   Double_t width = 5.;

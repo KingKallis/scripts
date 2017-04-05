@@ -22,10 +22,9 @@
   c1 = new TCanvas("c1","QBrho calibration",10,10,900,600);
 
   Int_t n = 4;
- // Double_t x[n]  = {7.47E+02,6.34110e+02,4.87E+02};
- // Double_t y[n]  = {3122.4083799276,3092.089775646,3051.8774249504};
   Double_t x[n]  = {746.558,634.11,487.087,364.114};
-  Double_t y[n]  = {3093.2263609441,3062.6326326235,3022.0448824932,2987.33703906};
+ // Double_t y[n]  = {3093.8250656592,3063.2417863046,3022.6684385307,2987.9734250142}; // zero target thickness
+  Double_t y[n]  = {3093.23503895635,3062.6461639164,3022.0651813368,2987.3634400923}; // 700ug/cm2 thickness and considering the downstream value 
 
   Double_t par[3];
   Double_t a0,a1,a2;
@@ -49,7 +48,6 @@
   DATA->SetAlias("QBrho",Form("%g+%g*X1posCTOF+%g*X1posCTOF*X1posCTOF",a0,a1,a2));
 
   TH1F *hQBrho = new TH1F("hQBrho","QBrho calibrated spectra",800,2950.,3150.);
-  DATA->Draw("QBrho>>hQBrho","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0","");
 
   if(Mg24_NoCol)
     {

@@ -1,7 +1,8 @@
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = true;
-  bool Mg26 = false;
+  bool Mg24_Col = false;
+  bool Mg26_NoCol = false;
+  bool Mg26_Col = true;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
@@ -33,11 +34,21 @@
 		  runlist.push_back(dummy);
 		}
     }
-  else if(Mg26)
+  else if(Mg26_NoCol)
     {
       ifstream input;
-      input.open("26Mg_runs.dat");
-      
+      input.open("26Mg_runs_NoCol.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }
+  else if(Mg26_Col)
+    {
+      ifstream input;
+      input.open("26Mg_runs_Col.dat");
       while(!input.eof())
 		{
 		  int dummy = 0;
@@ -95,6 +106,18 @@
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
       cout << "----------------> using cuts for 24Mg Collimator data" << endl;
     }
+  else if(Mg26_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_26Mg_NoCol.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_NoCol.C");
+      cout << "----------------> using cuts for 26Mg No Collimator data" << endl;
+    }
+  else if(Mg26_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_26Mg_Col.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_Col.C");
+      cout << "----------------> using cuts for 26Mg Collimator data" << endl;
+    }
 
 
   for(int i=0;i<(int)runlist.size()-1;i++)
@@ -112,14 +135,26 @@
 	    
             if(Mg24_NoCol)
               {
-		DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//NON CORRECTED
-	       // DATA->Draw("X1posO>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//CORRECTED
+		//DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//CORRECTED
                 //cout << "24Mg No Collimator cuts" << endl;
               }
 	     else if (Mg24_Col)
 	      {
-	        DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//NON CORRECTED
-	     //   DATA->Draw("X1posO>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//CORRECTED
+	       // DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//CORRECTED
+		//cout << "24Mg Collimator cuts" << endl;
+	      }
+             else if(Mg26_NoCol)
+              {
+		//DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","");//CORRECTED
+                //cout << "24Mg No Collimator cuts" << endl;
+              }
+	     else if (Mg26_Col)
+	      {
+	       // DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","");//CORRECTED
 		//cout << "24Mg Collimator cuts" << endl;
 	      }
 	      
@@ -140,6 +175,12 @@
 	      line->SetLineStyle(2);
               line->Draw();
 
+          /*    TLine *line1 = new TLine(407,0,407,10000);
+              line1->SetLineColor(1);
+	      line1->SetLineWidth(2);
+	      line1->SetLineStyle(2);
+              line1->Draw();
+	  */
 		/*int j=i+1;
 		if (j==10) j=(int)runlist.size();
 		hX1pos->SetLineColor(j);

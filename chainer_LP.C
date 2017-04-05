@@ -1,15 +1,15 @@
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = false;
-  bool Mg26_NoCol = false;
-  bool Mg26_Col = true;
+  bool Mg24_Col = true;
+  bool Mg26 = false;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
 
- // char pause;
-  c1 = new TCanvas("c1","Checks on Cut PadvsToF",10,10,900,600);
-  
+
+  bool maketree = false;
+
+  TChain *DATAch = new TChain("DATA");
 
   vector<int> runlist;
   if(Mg24_NoCol)
@@ -23,7 +23,7 @@
 		  runlist.push_back(dummy);
 		}
     }  
-  else if(Mg24_Col)
+  if(Mg24_Col)
     {
       ifstream input;
       input.open("24Mg_runs_Col.dat");
@@ -34,21 +34,11 @@
 		  runlist.push_back(dummy);
 		}
     }
-  else if(Mg26_NoCol)
+  else if(Mg26)
     {
       ifstream input;
-      input.open("26Mg_runs_NoCol.dat");
-      while(!input.eof())
-		{
-		  int dummy = 0;
-		  input >> dummy;
-		  runlist.push_back(dummy);
-		}
-    }
-  else if(Mg26_Col)
-    {
-      ifstream input;
-      input.open("26Mg_runs_Col.dat");
+      input.open("26Mg_runs.dat");
+      
       while(!input.eof())
 		{
 		  int dummy = 0;
@@ -93,28 +83,25 @@
 		}
     }
   cout << "number of runs: " << runlist.size()-1 << endl;
+ 
+  //  Include any cuts that you might want to use ---------------------------
   
  if(Mg24_NoCol)
     {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_NoCol.C");
       cout << "----------------> using cuts for 24Mg No Collimator data" << endl;
     }
   else if(Mg24_Col)
     {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
       cout << "----------------> using cuts for 24Mg Collimator data" << endl;
     }
-  else if(Mg26_NoCol)
-    {
-      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_NoCol.C");
-      cout << "----------------> using cuts for 26Mg No Collimator data" << endl;
-    }
-  else if(Mg26_Col)
-    {
-      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_Col.C");
-      cout << "----------------> using cuts for 26Mg Collimator data" << endl;
-    }
+  
 
+  // ----------------------------------------
+  
 
   for(int i=0;i<(int)runlist.size()-1;i++)
     {
@@ -123,41 +110,27 @@
       cout << buffer << endl;
       TFile *f = TFile::Open(buffer);
 
+      if(f)
+		{
+		  DATAch->Add(buffer);
+		  cout << "Total N. events: " << DATAch->GetEntries() << endl;
+		}
+    }
 
-      if(f){
-	      // ******* Plot graph to check the cut on padvsX1                
-	    
-	     TH2F *pad1vstof_check = new TH2F("h2pad1vsX1","Check of the cut in padvstof",800,0,800,3000,0,3000);
-             
-	     DATA->Draw("pad1:X1pos>>h2pad1vsX1","","col"); //CORRECTED
-	    // DATA->Draw("pad1raw:X1pos>>h2pad1vsX1","","col"); //NON CORRECTED
-
-              int entries = h2pad1vsX1->GetEntries();
-	      cout << "ENTRIES in histo = " <<entries<<endl;
-	      if(entries==0) cout << "------------> Run number " << runlist[i] << " IS EMPTY "<<endl;
-              
-	      cutg->SetLineColor(2);
-              cutg->SetLineWidth(2);
-              cutg->Draw("same");
-
-  	      c1->Modified();
-	      c1->Update();
-	      c1->WaitPrimitive();
-	      if(i<(int)runlist.size()-1-1)c1->Clear();
-
-
-       	    }
-	 
-  //   cout << "Press any key to continue...";
-  //    cin >> pause;		
-
-      }
+ 
+  DATA->Draw("Ex>>hEx(800,3.5,16)","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0","");
 
 
 
-	  
-
+  if(maketree){
+  	 TFile *myfile=new TFile("Chainedtree.root", "RECREATE");
+     cout << DATAch->GetEntries() << endl;
+     TTree *TF = DATAch->CopyTree("Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0");
+     TF->SetName("DATA2");
+     myfile = TF->GetCurrentFile();
+     myfile->Write();
+     myfile->Close();
+     
+  }
 
 }
-
-

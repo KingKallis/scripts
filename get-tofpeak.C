@@ -3,8 +3,10 @@
   // It is set to be run in the folder where the sortedfiles are
   // Put the list of runs in the same folder or change the folders path according to your needs
 
-  bool Mg24_NoCol = true;
-  bool Mg24_Col = false;
+  bool Mg24_NoCol = false;
+  bool Mg24_Col = true;
+  bool Mg26_NoCol = false;
+  bool Mg26_Col = false;
   bool Sn116_NoCol = false;
 
  vector<int> runlist;
@@ -36,6 +38,30 @@
     {
       ifstream input;
       input.open("116Sn_runs_NoCol.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		  if(dummy!=0) cout << "LIST:run number " << dummy << endl;
+		}
+    }
+   else if(Mg26_Col)
+    {
+      ifstream input;
+      input.open("26Mg_runs_Col.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		  if(dummy!=0) cout << "LIST:run number " << dummy << endl;
+		}
+    }
+   else if(Mg26_NoCol)
+    {
+      ifstream input;
+      input.open("26Mg_runs_NoCol.dat");
       while(!input.eof())
 		{
 		  int dummy = 0;

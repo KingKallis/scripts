@@ -8,7 +8,9 @@
 
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = true;
+  bool Mg24_Col = false;
+  bool Mg26_NoCol = false;
+  bool Mg26_Col = true;
 
  if(Mg24_NoCol)
     {
@@ -22,6 +24,19 @@
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
       cout << "----------------> using cuts for 24Mg Collimator data" << endl;
+    }
+  else if(Mg26_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_26Mg_NoCol.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_NoCol.C");
+      cout << "----------------> using cuts for 26Mg No Collimator data" << endl;
+    }
+
+  else if(Mg26_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_26Mg_Col.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_Col.C");
+      cout << "----------------> using cuts for 26Mg Collimator data" << endl;
     }
 
 //=============================================================
@@ -40,6 +55,14 @@
   else if(Mg24_Col)
     {
       DATA->Draw("Y1:X1posO>> hY1vsX1posO","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","col");
+    }
+  else if(Mg26_NoCol)
+    {
+      DATA->Draw("Y1:X1posO>> hY1vsX1posO","X1flag==0 && U1flag==0 && Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","col");
+    }
+  else if(Mg26_Col)
+    {
+      DATA->Draw("Y1:X1posO>> hY1vsX1posO","X1flag==0 && U1flag==0 && Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","col");
     }
 
    hY1vsX1posO->GetXaxis()->SetTitle("X1 position (mm)");
@@ -68,6 +91,16 @@
     {
       DATA->SetAlias("X1posat0",Form("X1posO-%g",X1mean));  //define the X1posO of the peak of interest to 0
       DATA->Draw("Y1:X1posat0>> hPeakofInterest_Y1X1","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","col"); 
+    }  
+  else if(Mg26_NoCol)
+    {
+      DATA->SetAlias("X1posat0",Form("X1posO-%g",X1mean)); //define the X1posO of the peak of interest to 0
+      DATA->Draw("Y1:X1posat0>> hPeakofInterest_Y1X1","X1flag==0 && U1flag==0 && Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","col"); 
+    }
+  else if(Mg26_Col)
+    {
+      DATA->SetAlias("X1posat0",Form("X1posO-%g",X1mean));  //define the X1posO of the peak of interest to 0
+      DATA->Draw("Y1:X1posat0>> hPeakofInterest_Y1X1","X1flag==0 && U1flag==0 && Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","col"); 
     }  
 
   hPeakofInterest_Y1X1->GetXaxis()->SetTitle("X1-X1mean (mm)");
@@ -140,6 +173,14 @@
     {
       DATA->Draw("Y1:X1_Y1new>> hY1vsX1new","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","col"); 
     }
+  else if(Mg26_NoCol)
+    {
+      DATA->Draw("Y1:X1_Y1new>> hY1vsX1new","X1flag==0 && U1flag==0 && Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","col"); 
+    }
+  else if(Mg26_Col)
+    {
+      DATA->Draw("Y1:X1_Y1new>> hY1vsX1new","X1flag==0 && U1flag==0 && Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","col"); 
+    }
 
    hY1vsX1new->GetXaxis()->SetTitle("Corrected X1 position (mm)");
    hY1vsX1new->GetYaxis()->SetTitle("Y1 position");
@@ -174,6 +215,14 @@
     {
       DATA->Draw("tof:X1_Y1new>>htofvsX1_Y1new","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","col");
     }
+  else if(Mg26_NoCol)
+    {
+      DATA->Draw("tof:X1_Y1new>>htofvsX1_Y1new","X1flag==0 && U1flag==0 && Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","col");
+    }
+  else if(Mg26_Col)
+    {
+      DATA->Draw("tof:X1_Y1new>>htofvsX1_Y1new","X1flag==0 && U1flag==0 && Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","col");
+    }
 
    htofvsX1_Y1new->GetXaxis()->SetTitle("X1_Y1new position (mm)");
    htofvsX1_Y1new->GetYaxis()->SetTitle("ToF");
@@ -204,6 +253,18 @@
       DATA->SetAlias("tofat0",Form("tof-%g",tofmean));  //define the tof of the peak of interest to 0
       DATA->Draw("tofat0:X1_Y1newat0>> hPeakofInterest","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","col"); 
     }  
+  else if(Mg26_NoCol)
+    {
+      DATA->SetAlias("X1_Y1newat0",Form("X1_Y1new-%g",X1mean)); //define the X1posO of the peak of interest to 0
+      DATA->SetAlias("tofat0",Form("tof-%g",tofmean));  //define the tof of the peak of interest to 0
+      DATA->Draw("tofat0:X1_Y1newat0>> hPeakofInterest","X1flag==0 && U1flag==0 && Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","col"); 
+    }
+  else if(Mg26_Col)
+    {
+      DATA->SetAlias("X1_Y1newat0",Form("X1_Y1new-%g",X1mean)); //define the X1posO of the peak of interest to 0
+      DATA->SetAlias("tofat0",Form("tof-%g",tofmean));  //define the tof of the peak of interest to 0
+      DATA->Draw("tofat0:X1_Y1newat0>> hPeakofInterest","X1flag==0 && U1flag==0 && Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","col"); 
+    } 
 
   hPeakofInterest->GetXaxis()->SetTitle("X1_Y1new-X1mean (mm)");
   hPeakofInterest->GetYaxis()->SetTitle("ToF-ToFmean");
@@ -278,6 +339,14 @@
   else if(Mg24_Col)
     {
       DATA->Draw("tof:X1new>> htofvsX1new","X1flag==0 && U1flag==0 && Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","col"); 
+    }
+  else if(Mg26_NoCol)
+    {
+      DATA->Draw("tof:X1new>> htofvsX1new","X1flag==0 && U1flag==0 && Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","col"); 
+    }
+  else if(Mg26_Col)
+    {
+      DATA->Draw("tof:X1new>> htofvsX1new","X1flag==0 && U1flag==0 && Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","col"); 
     }
 
    htofvsX1new->GetXaxis()->SetTitle("Corrected X1 position (mm)");
