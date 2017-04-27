@@ -8,9 +8,9 @@
 
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = false;
+  bool Mg24_Col = true;
   bool Mg26_NoCol = false;
-  bool Mg26_Col = true;
+  bool Mg26_Col = false;
 
  if(Mg24_NoCol)
     {
@@ -45,7 +45,7 @@
 
 
   c1 = new TCanvas("c1","Checks lineshape X1Y1",10,10,900,600);
- //ToF vs X1 histogram
+ //Y1 vs X1 histogram
   TH2F *hY1vsX1posO = new TH2F("hY1vsX1posO","Y1 vs X1posO",700,100,800,480,-60.,60.);
  
   if(Mg24_NoCol)

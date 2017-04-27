@@ -1,8 +1,8 @@
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = false;
+  bool Mg24_Col = true;
   bool Mg26_NoCol = false;
-  bool Mg26_Col = true;
+  bool Mg26_Col = false;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
@@ -129,7 +129,7 @@
 	    
 	     TH2F *pad1vstof_check = new TH2F("h2pad1vsX1","Check of the cut in padvstof",800,0,800,3000,0,3000);
              
-	     DATA->Draw("pad1:X1pos>>h2pad1vsX1","","col"); //CORRECTED
+	     DATA->Draw("pad1:X1posO>>h2pad1vsX1","","col"); //CORRECTED
 	    // DATA->Draw("pad1raw:X1pos>>h2pad1vsX1","","col"); //NON CORRECTED
 
               int entries = h2pad1vsX1->GetEntries();

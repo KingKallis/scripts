@@ -1,7 +1,8 @@
 {
   bool Mg24_NoCol = false;
   bool Mg24_Col = true;
-  bool Mg26 = false;
+  bool Mg26_NoCol = false;
+  bool Mg26_Col = false;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
@@ -23,7 +24,7 @@
 		  runlist.push_back(dummy);
 		}
     }  
-  if(Mg24_Col)
+  else if(Mg24_Col)
     {
       ifstream input;
       input.open("24Mg_runs_Col.dat");
@@ -34,11 +35,21 @@
 		  runlist.push_back(dummy);
 		}
     }
-  else if(Mg26)
+  else if(Mg26_NoCol)
     {
       ifstream input;
-      input.open("26Mg_runs.dat");
-      
+      input.open("26Mg_runs_NoCol.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }  
+  else if(Mg26_Col)
+    {
+      ifstream input;
+      input.open("26Mg_runs_Col.dat");
       while(!input.eof())
 		{
 		  int dummy = 0;
@@ -98,6 +109,18 @@
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_24Mg_Col.C");
       cout << "----------------> using cuts for 24Mg Collimator data" << endl;
     }
+  else if(Mg26_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_26Mg_NoCol.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_NoCol.C");
+      cout << "----------------> using cuts for 26Mg No Collimator data" << endl;
+    }
+  else if(Mg26_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_26Mg_Col.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_Col.C");
+      cout << "----------------> using cuts for 26Mg Collimator data" << endl;
+    }
   
 
   // ----------------------------------------
@@ -118,9 +141,25 @@
     }
 
  
-  DATA->Draw("Ex>>hEx(800,3.5,16)","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0","");
-
-
+  
+ if(Mg24_NoCol)
+    {
+      DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol && X1flag==0 && U1flag==0 && Y1>-20 && Y1<20","");
+    }
+  else if(Mg24_Col)
+    {
+      DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0 && Y1>-20 && Y1<20","");
+    }
+  else if(Mg26_NoCol)
+    {
+      DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol && X1flag==0 && U1flag==0 && Y1>-20 && Y1<20","");
+    }
+  else if(Mg26_Col)
+    {
+      DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col && X1flag==0 && U1flag==0 && Y1>-20 && Y1<20","");
+    }
+  
+   cout << "events: " << hEx->GetEntries() << endl;
 
   if(maketree){
   	 TFile *myfile=new TFile("Chainedtree.root", "RECREATE");

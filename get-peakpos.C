@@ -103,8 +103,7 @@
   fit->SetParameters(height,position,sigm,intercept,slope);  
 
 
-  Double_t a0,a1,a2,a3,a4,norm;
-  Double_t width = 5.;
+  Double_t a0,a1,a2,a3,a4;
   Double_t par[5];
 
 

@@ -1,7 +1,7 @@
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = true;
-  bool Mg26 = false;
+  bool Mg24_Col = false;
+  bool Mg26 = true;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
