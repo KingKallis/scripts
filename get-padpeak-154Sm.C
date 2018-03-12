@@ -100,18 +100,10 @@
 
   Int_t nrofruns=(int)runlist.size()-1; 
 
-/*  int x1poslow,x1poshi;
 
-  cout << "lower limit for the X1Pos peak"<< endl;
-  cin >> x1poslow;
-  cout << "higher limit for the X1Pos peak"<< endl;
-  cin >> x1poshi;
 
-  TCut CUTX1pos = "X1pos>x1poslow && X1pos<x1poshi";
-*/
+  TCut CUTtofpos = "tof>1600 && tof<1850"; //154Sm----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
 
-  TCut CUTX1pos = "X1pos>620 && X1pos<640"; //24Mg----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
- // TCut CUTX1pos = "X1pos>660 && X1pos<720"; //26Mg----------------> REMEBER TO CHANGE THIS TO SELECT THE PEAK OF INTEREST
 
   Double_t a0,a1,a2,a3,a4,norm;
   Double_t width = 5.;
@@ -120,9 +112,6 @@
 
   Float_t peakposition[nrofruns];
   Float_t sigma[nrofruns];
-
-  //gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_NoCol.C");
-  gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_24Mg_Col.C");
 
 
 for(int i=0;i<(int)runlist.size()-1;i++)
@@ -133,9 +122,9 @@ for(int i=0;i<(int)runlist.size()-1;i++)
       TFile *f = TFile::Open(buffer);
 
       if(f){
-	     TH1F *hpad1 = new TH1F("hpad1","pad1 spectrum",800,1000.,1800.);
+	     TH1F *hpad1 = new TH1F("hpad1","pad1 spectrum",500,50.,550.);
 	  //   DATA->Draw("pad1>>hpad1","Alphas_24Mg_NoCol && CUTX1pos","");
-             DATA->Draw("pad1>>hpad1","Alphas_24Mg_Col" && CUTX1pos,"");
+             DATA->Draw("pad1>>hpad1", CUTtofpos,"");
 	  
 	  int entries = hpad1->GetEntries();
 	  cout << "ENTRIES in histo = " <<entries<<endl;
@@ -146,7 +135,7 @@ for(int i=0;i<(int)runlist.size()-1;i++)
 		}else{
 	  
 
-	  hpad1->Fit("gaus","R","",1200,1700);  
+	  hpad1->Fit("gaus","R","",100,500);  
 
 	  gaus->GetParameters(par);
 

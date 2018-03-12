@@ -17,9 +17,9 @@
   // Put the list of runs in the same folder or change the folders path according to your needs
 
   bool Mg24_NoCol = false;
-  bool Mg24_Col = false;
+  bool Mg24_Col = true;
   bool Mg26_NoCol = false;
-  bool Mg26_Col = true;
+  bool Mg26_Col = false;
   bool Sn116_NoCol = false;
 
  vector<int> runlist;
@@ -87,7 +87,7 @@
   Int_t nrofruns=(int)runlist.size()-1; 
 
   Float_t height,position,sigm,intercept,slope;
-  Double_t xmin=600,xmax=800;
+  Double_t xmin=600,xmax=650;
   TF1 *fit = new TF1("fit","gaus(0) + pol1(3)",xmin,xmax);
   cout << "Height of gaussian"<< endl;
   cin >> height;
@@ -143,27 +143,29 @@ for(int i=0;i<(int)runlist.size()-1;i++)
       TFile *f = TFile::Open(buffer);
 
       if(f){
-	     TH1F *hX1pos = new TH1F("hX1pos","X1 Position",300,500.,800.);
+	     TH1F *hX1pos = new TH1F("hX1pos","X1 Position",150,600.,650.);
 
              if(Mg24_NoCol)
               {
-	        DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NCol && Cut_pad1X1_24Mg_NoCol","");
+	      //  DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol && X1flag==0 && U1flag==0 && tof>1940 && tof<1960","");// NOT CORRECTED
+		DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol && X1flag==0 && U1flag==0","");// CORRECTED
                 //cout << "24Mg No Collimator cuts" << endl;
               }
 	     else if (Mg24_Col)
 	      {
-	        DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");
+		//  DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0 && tof>1940 && tof<1960","");// NOT CORRECTED
+		DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0","");// CORRECTED
 		//cout << "24Mg Collimator cuts" << endl;
 	      }
              else if(Mg26_NoCol)
               {
-	        DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_NCol && Cut_pad1X1_26Mg_NoCol","");
-                //cout << "26Mg No Collimator cuts" << endl;
+		//DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol && X1flag==0 && U1flag==0 && tof>1940 && tof<1960",""); // NOT CORRECTED
+                DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol && X1flag==0 && U1flag==0",""); // CORRECTED
               }
 	     else if (Mg26_Col)
 	      {
-	        //DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col",""); // NOT CORRECTED
-                DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col",""); // CORRECTED
+	        //DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col && X1flag==0 && U1flag==0 && tof>1940 && tof<1960",""); // NOT CORRECTED
+                DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col && X1flag==0 && U1flag==0",""); // CORRECTED
 		//cout << "26Mg Collimator cuts" << endl;
 	      }
 
@@ -178,7 +180,7 @@ for(int i=0;i<(int)runlist.size()-1;i++)
 
 	  ///   ***************** TO BE CHECKED
               TSpectrum *sp = new TSpectrum();
-	      sp->Search(hX1pos,sigm,"",0.8); // h histoname; 1. sigma; 0.28 threshold (minimum intensity considered = maximum * threshold)
+	      sp->Search(hX1pos,sigm,"",0.28); // h histoname; 1. sigma; 0.28 threshold (minimum intensity considered = maximum * threshold)
 	      int n_peaks_found = sp->GetNPeaks(); 
 //  	      sprintf(buffer,"sorted0%d.root",runlist[i]);
 	      std::cout << n_peaks_found << " ---------" << endl;
@@ -215,15 +217,31 @@ for(int i=0;i<(int)runlist.size()-1;i++)
   }
    
   //Creates file with the offsets in the current folder. Then move it to the analyser folder and remove _new to be able to use it
+  
+//file peak positions
   ofstream outputFile;
-  outputFile.open("X1offsetsPR251_new.dat");
+  outputFile.open("X1offsetsPR251_new_jan2018_aftercorr.dat");
 
   for(Int_t i=0;i<nrofruns;i++)	{
      cout << runlist[i] <<"  "<< float(peakposition[0]-peakposition[i]) << endl;
      outputFile << runlist[i] <<"  "<< float(peakposition[0]-peakposition[i]) << endl;
   }
+
+
   outputFile.close();
   cout << "File Offsets Created!\n";
+
+//file peak FWHM
+  ofstream outputFile2;
+  outputFile2.open("X1FWHMPR251_new_jan2018_aftercorr.dat");
+
+  for(Int_t i=0;i<nrofruns;i++)	{
+     cout << runlist[i] <<"  "<< float(sigma[i]*2.35) << endl;
+     outputFile << runlist[i] <<"  "<< float(sigma[i]*2.35) << endl;
+  }
+  outputFile2.close();
+  cout << "File FWHM Created!\n";
+
 
 }
 

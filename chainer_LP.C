@@ -1,11 +1,12 @@
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = false;
+  bool Mg24_Col = true;
   bool Mg26_NoCol = false;
-  bool Mg26_Col = true;
+  bool Mg26_Col = false;
   bool C12 = false;
-  bool Sm154 = false;
   bool Sn116_NoCol = false;
+  bool Sm154_Col = false;
+  bool Sm154_NoCol = false;
 
 
   bool maketree = false;
@@ -27,7 +28,8 @@
   else if(Mg24_Col)
     {
       ifstream input;
-      input.open("24Mg_runs_Col.dat");
+     // input.open("24Mg_runs_Col.dat");
+      input.open("24Mg_runs_Col_short.dat");
       while(!input.eof())
 		{
 		  int dummy = 0;
@@ -69,18 +71,6 @@
 		  runlist.push_back(dummy);
 		}
     }
-  else if(Sm154)
-    {
-      ifstream input;
-      input.open("154Sm_runs.dat");
-      
-      while(!input.eof())
-		{
-		  int dummy = 0;
-		  input >> dummy;
-		  runlist.push_back(dummy);
-		}
-    }
   else if(Sn116_NoCol)
     {
       ifstream input;
@@ -93,6 +83,33 @@
 		  runlist.push_back(dummy);
 		}
     }
+   else if(Sm154_Col)
+    {
+      ifstream input;
+      input.open("154Sm_runs_Col.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }
+  else if(Sm154_NoCol)
+    {
+      ifstream input;
+      input.open("154Sm_runs_NoCol.dat");
+      
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }    
+    
+    
+    
+    
   cout << "number of runs: " << runlist.size()-1 << endl;
  
   //  Include any cuts that you might want to use ---------------------------
@@ -121,7 +138,18 @@
       gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_26Mg_Col.C");
       cout << "----------------> using cuts for 26Mg Collimator data" << endl;
     }
-  
+  else if(Sm154_NoCol)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_154Sm_NoCol.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_154Sm_NoCol.C");
+      cout << "----------------> using cuts for 154Sm No Collimator data" << endl;
+    }
+  else if(Sm154_Col)
+    {
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Alphas_154Sm_Col.C");
+      gROOT->ProcessLine(".x /home/luna/codes/PR251-analysis/sortedfiles/gates/Cut_pad1X1_154Sm_Col.C");
+      cout << "----------------> using cuts for 154Sm Collimator data" << endl;
+    }  
 
   // ----------------------------------------
   
@@ -141,7 +169,7 @@
     }
 
  
-  
+ /* 
  if(Mg24_NoCol)
     {
       DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol && X1flag==0 && U1flag==0 && Y1>-20 && Y1<20","");
@@ -158,11 +186,26 @@
     {
       DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col && X1flag==0 && U1flag==0 && Y1>-20 && Y1<20","");
     }
-  
-   cout << "events: " << hEx->GetEntries() << endl;
+  else if(Sm154_NoCol)
+    {
+      DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_154Sm_NoCol && Cut_pad1X1_154Sm_NoCol && X1flag==0 && U1flag==0 && Y1>-25 && Y1<25","");
+    }
+  else if(Sm154_Col)
+    {
+      c1 = new TCanvas("c1","Ex",10,10,900,600);
+      DATAch->Draw("Ex>>hEx(1250,3.5,16)","Alphas_154Sm_Col && Cut_pad1X1_154Sm_Col && X1flag==0 && U1flag==0 && Y1>-25 && Y1<25","");
+      c2 = new TCanvas("c2","X1posCTOF",10,10,900,600);
+      DATAch->Draw("X1posCTOF>>hX1posCTOF(800,0,800)","Alphas_154Sm_Col && Cut_pad1X1_154Sm_Col && X1flag==0 && U1flag==0 && Y1>-25 && Y1<25","");      
+    }
+    
 
+      
+   cout << "events: " << hEx->GetEntries() << endl;
+    */
+	
   if(maketree){
-  	 TFile *myfile=new TFile("Chainedtree.root", "RECREATE");
+  
+     TFile *myfile=new TFile("Chainedtree.root", "RECREATE");
      cout << DATAch->GetEntries() << endl;
      TTree *TF = DATAch->CopyTree("Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0");
      TF->SetName("DATA2");

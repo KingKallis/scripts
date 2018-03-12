@@ -46,7 +46,7 @@
 
   c1 = new TCanvas("c1","Checks lineshape X1Y1",10,10,900,600);
  //Y1 vs X1 histogram
-  TH2F *hY1vsX1posO = new TH2F("hY1vsX1posO","Y1 vs X1posO",700,100,800,480,-60.,60.);
+  TH2F *hY1vsX1posO = new TH2F("hY1vsX1posO","Y1 vs X1posO",2100,100,800,480,-60.,60.);
  
   if(Mg24_NoCol)
     {
@@ -77,7 +77,7 @@
 
    Double_t X1mean=0;
 
-   cout << "Mean value for X1posO" << endl;
+   cout << "Mean value for X1posO" << endl; // 633 for 24Mg
    cin >> X1mean;
    cout << "X1posO = " << X1mean << endl;
 
@@ -118,9 +118,9 @@
    Double_t a0,a1,a2;
    char key;
  
-   cout << "lowest bin for the fitting of Y1X1" << endl;
+   cout << "lowest bin for the fitting of Y1X1" << endl; //208 for 24Mg
    cin >> binmin_Y1;
-   cout << "highest bin for the fitting for Y1X1" << endl;
+   cout << "highest bin for the fitting for Y1X1" << endl;  //300 for 24Mg
    cin >> binmax_Y1;
    cout << "binmin_Y1 = " << binmin_Y1 << " binmax_Y1 = " << binmax_Y1 << endl;
   
@@ -161,7 +161,7 @@
    
    DATA->SetAlias("X1_Y1new",Form("X1posO-(%g+(%g*(Y1))+(%g*pow(Y1,2)))",a0,a1,a2));
 
-   TH2F *hY1vsX1new = new TH2F("hY1vsX1new","Y1 vs X1_Y1new",700,100,800,480,-60,60);
+   TH2F *hY1vsX1new = new TH2F("hY1vsX1new","Y1 vs X1_Y1new",2100,100,800,480,-60,60);
 
    TCanvas *c4 = new TCanvas("c4","Y1 vs X1 corrected matrix",10,10,900,600);
 
@@ -205,7 +205,7 @@
 
   c5 = new TCanvas("c5","Checks lineshape tofX1",10,10,900,600);
  //ToF vs X1 histogram
-  TH2F *htofvsX1_Y1new = new TH2F("htofvsX1_Y1new","tof vs X1_Y1new",700,100,800,100,1910,2010);
+  TH2F *htofvsX1_Y1new = new TH2F("htofvsX1_Y1new","tof vs X1_Y1new",2100,100,800,100,1910,2010);
  
   if(Mg24_NoCol)
     {
@@ -230,13 +230,13 @@
    c5 -> Modified();
 
 
-  TH2F *hPeakofInterest = new TH2F("hPeakofInterest","tof vs X1_Y1new",40,-20,20,100,-50,50);
+  TH2F *hPeakofInterest = new TH2F("hPeakofInterest","tof vs X1_Y1new",120,-20,20,100,-50,50);
   
   TCanvas *c6 = new TCanvas("c6","tofX1 peak of interest",10,10,900,600);;
 
    Double_t tofmean=0;
 
-   cout << "Mean value for tof" << endl;
+   cout << "Mean value for tof" << endl; // 1960 for 24Mg
    cin >> tofmean;
    cout << "X1posO = " << X1mean << " tofmean = " << tofmean << endl;
 
@@ -277,12 +277,14 @@
    float binmin_tof=0;
    float binmax_tof=0;
    float bininter_tof=0, bindiff_tof=0, bintemp_tof=0;
-   Double_t par_tofX1[3];
-   Double_t b0,b1,b2;
+   //Double_t par_tofX1[3]; //pol2
+   Double_t par_tofX1[8]; //pol2
+   Double_t b0,b1,b2,b3,b4,b5,b6,b7;
  
-   cout << "lowest bin for the fitting of tofX1" << endl;
+   cout << "lowest bin for the fitting of tofX1" << endl; //10 for 24Mg
    cin >> binmin_tof;
-   cout << "highest bin for the fitting for tofX1" << endl;
+   cout << "highest bin for the fitting for tofX1" << endl; //90 for 24Mg
+  
    cin >> binmax_tof;
    cout << "binmin_tof = " << binmin_tof << " binmax_tof = " << binmax_tof << endl;
   
@@ -306,7 +308,7 @@
 */
 //=============================================================================================
 
-
+/* //pol2 fit
    hPeakofInterest->FitSlicesX(0,binmin_tof,binmax_tof,0,"Q",0); //see below how the FitSlicesX works
    hPeakofInterest_1->Draw(); //histoname_1 is the histogram of the centroid parameters for each slice 
    hPeakofInterest_1->Fit("pol2");
@@ -317,19 +319,33 @@
    hPeakofInterest_1->GetYaxis()->SetRangeUser(-20., 20.);
    c7 -> Update();
    c7 -> Modified();
+*/
+
+//pol7 fit
+   hPeakofInterest->FitSlicesX(0,binmin_tof,binmax_tof,0,"Q",0); //see below how the FitSlicesX works
+   hPeakofInterest_1->Draw(); //histoname_1 is the histogram of the centroid parameters for each slice 
+   hPeakofInterest_1->Fit("pol7");
+   pol7->GetParameters(par_tofX1);
+   b0=par_tofX1[0];b1=par_tofX1[1];b2=par_tofX1[2];b3=par_tofX1[3];b4=par_tofX1[4];b5=par_tofX1[5];b6=par_tofX1[6];b7=par_tofX1[7];
+   cout << endl << " par0_tofX1 " << b0 <<"; par1_tofX1 " << b1 <<"; par2_tofX1 " << b2 <<"; par3_tofX1 " << b3 << "; par4_tofX1 " << b4 << "; par5_tofX1 " << b5 <<"; par6_tofX1 " << b6 <<"; par7_tofX1 " << b7 <<endl;
+   hPeakofInterest_1->GetXaxis()->SetRangeUser(-50., 50.);
+   hPeakofInterest_1->GetYaxis()->SetRangeUser(-20., 20.);
+   c7 -> Update();
+   c7 -> Modified();
 
  //implement lineshaping correction
    
    Double_t X1ref=0;
 
-   cout << "X1 value for the peak that doesn't need correction" << endl;
+   cout << "X1 value for the peak that doesn't need correction" << endl; //255 for 24Mg
    cin >> X1ref;
 
   // DATA->SetAlias("X1new",Form("X1_Y1new-(%g+(%g*(tof-%g)+(%g*pow(tof-%g,2))))",b0,b1,tofmean,b2,tofmean));
-   DATA->SetAlias("X1new",Form("X1_Y1new-((%g*(tof-%g)+(%g*pow(tof-%g,2)))*(X1_Y1new-%g)/(%g))",b1,tofmean,b2,tofmean,X1ref,X1mean-X1ref));
+  // DATA->SetAlias("X1new",Form("X1_Y1new-((%g*(tof-%g)+(%g*pow(tof-%g,2)))*(X1_Y1new-%g)/(%g))",b1,tofmean,b2,tofmean,X1ref,X1mean-X1ref)); //pol2
+   DATA->SetAlias("X1new",Form("X1_Y1new-((%g*(tof-%g)+(%g*pow(tof-%g,2))+(%g*pow(tof-%g,3))+(%g*pow(tof-%g,4))+(%g*pow(tof-%g,5))+(%g*pow(tof-%g,6))+(%g*pow(tof-%g,7)))*(X1_Y1new-%g)/(%g))",b1,tofmean,b2,tofmean,b3,tofmean,b4,tofmean,b5,tofmean,b6,tofmean,b7,tofmean,X1ref,X1mean-X1ref)); //pol7
   
    
-   TH2F *htofvsX1new = new TH2F("htofvsX1new","tof vs X1new",700,100,800,100,1910,2010);
+   TH2F *htofvsX1new = new TH2F("htofvsX1new","tof vs X1new",2100,100,800,100,1910,2010);
    TCanvas *c8 = new TCanvas("c8","tof vs X1 corrected matrix",10,10,900,600);
 
   if(Mg24_NoCol)
@@ -360,7 +376,8 @@
    cout << " " << endl; 
 
    cout << endl << " Y1 ----> par0  " << -a0 <<"; par1 " << -a1 <<"; par2 " << -a2 << endl;
-   cout << endl << " TOF ----> par0 " << -b0 <<"; par1 " << -b1 <<"; par2 " << -b2 << endl;
+  // cout << endl << " TOF ----> par0 " << -b0 <<"; par1 " << -b1 <<"; par2 " << -b2 << endl; //pol2
+   cout << endl << " TOF ----> par0 " << -b0 <<"; par1 " << -b1 <<"; par2 " << -b2 <<"; par3 " << -b3 <<"; par4 " << -b4 << "; par5 " << -b5 <<"; par6 " << -b6 << "; par7 " << -b7 <<endl; //pol7
 }
 
 // Project slices along X in case of a 2-D histogram, then fit each slice 
@@ -381,7 +398,4 @@
 //          and only for bins in Y for which the corresponding projection 
 //          along X has more than cut bins filled. 
 // 
- 
 
-# Analysis_scripts
-# Analysis_scripts

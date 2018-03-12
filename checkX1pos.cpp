@@ -1,8 +1,8 @@
 {
   bool Mg24_NoCol = false;
-  bool Mg24_Col = false;
+  bool Mg24_Col = true;
   bool Mg26_NoCol = false;
-  bool Mg26_Col = true;
+  bool Mg26_Col = false;
   bool C12 = false;
   bool Sm154 = false;
   bool Sn116_NoCol = false;
@@ -131,30 +131,30 @@
 
       if(f){
 	      // ******* Plot graph to check X1 position 
-            TH1F *hX1pos = new TH1F("hX1pos","Check X1pos",800,0,800);              
+            TH1F *hX1pos = new TH1F("hX1pos","Check X1pos",150,600,650);              
 	    
             if(Mg24_NoCol)
               {
-		//DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//NON CORRECTED
-	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol","");//CORRECTED
+		//DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol && X1flag==0 && U1flag==0","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_NoCol && Cut_pad1X1_24Mg_NoCol && X1flag==0 && U1flag==0","");//CORRECTED
                 //cout << "24Mg No Collimator cuts" << endl;
               }
 	     else if (Mg24_Col)
 	      {
-	       // DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//NON CORRECTED
-	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col","");//CORRECTED
+	       // DATA->Draw("X1pos>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_24Mg_Col && Cut_pad1X1_24Mg_Col && X1flag==0 && U1flag==0","");//CORRECTED
 		//cout << "24Mg Collimator cuts" << endl;
 	      }
              else if(Mg26_NoCol)
               {
-		//DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","");//NON CORRECTED
-	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol","");//CORRECTED
+		//DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol && X1flag==0 && U1flag==0","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_NoCol && Cut_pad1X1_26Mg_NoCol && X1flag==0 && U1flag==0","");//CORRECTED
                 //cout << "24Mg No Collimator cuts" << endl;
               }
 	     else if (Mg26_Col)
 	      {
-	       // DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","");//NON CORRECTED
-	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col","");//CORRECTED
+	       // DATA->Draw("X1pos>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col && X1flag==0 && U1flag==0","");//NON CORRECTED
+	        DATA->Draw("X1posCTOF>>hX1pos","Alphas_26Mg_Col && Cut_pad1X1_26Mg_Col && X1flag==0 && U1flag==0","");//CORRECTED
 		//cout << "24Mg Collimator cuts" << endl;
 	      }
 	      

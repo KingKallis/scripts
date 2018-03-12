@@ -8,6 +8,8 @@
   bool Mg26_NoCol = false;
   bool Mg26_Col = false;
   bool Sn116_NoCol = false;
+  bool Sm154_Col = false;
+  bool Sm154_NoCol = false;
 
  vector<int> runlist;
   if(Mg24_NoCol)
@@ -70,6 +72,29 @@
 		  if(dummy!=0) cout << "LIST:run number " << dummy << endl;
 		}
     }
+   else if(Sm154_Col)
+    {
+      ifstream input;
+      input.open("154Sm_runs_Col.dat");
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }
+  else if(Sm154_NoCol)
+    {
+      ifstream input;
+      input.open("154Sm_runs_NoCol.dat");
+      
+      while(!input.eof())
+		{
+		  int dummy = 0;
+		  input >> dummy;
+		  runlist.push_back(dummy);
+		}
+    }
 
   cout << "number of runs: " << runlist.size()-1 << endl;
 
@@ -97,7 +122,7 @@ for(int i=0;i<(int)runlist.size()-1;i++)
       TFile *f = TFile::Open(buffer);
 
       if(f){
-  	  TH1F *htof = new TH1F("htof","TOF",250,1600,1850);//350,1600.,2300.
+  	  TH1F *htof = new TH1F("htof","TOF",50,2000,2050);//250,1600,1850//350,1600.,2300.
           DATA->Draw("tof>>htof","","");
 	  
 	  int entries = htof->GetEntries();
@@ -108,7 +133,7 @@ for(int i=0;i<(int)runlist.size()-1;i++)
          	 sigma[i] = 0;
 		}else{
 	  
-	  htof->Fit("gaus","R","",1600,1850);  
+	  htof->Fit("gaus","R","",2005,2030);  
 
 	  gaus->GetParameters(par);
 
